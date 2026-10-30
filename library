@@ -16,7 +16,7 @@ Library.Window = function(Self, Params)
     BgImage.Position = UDim2.fromOffset(0, 0)
     BgImage.ScaleType = Enum.ScaleType.Crop
     BgImage.ImageTransparency = 0
-    BgImage.ZIndex = 1
+    BgImage.ZIndex = 0.5
     BgImage.BorderSizePixel = 0
 
     Instance.new("UICorner", BgImage).CornerRadius = UDim.new(0, 10)
