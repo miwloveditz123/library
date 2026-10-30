@@ -15,7 +15,7 @@ Library.Window = function(Self, Params)
     BgImage.Size = UDim2.new(1, 0, 1, 0)
     BgImage.Position = UDim2.fromOffset(0, 0)
     BgImage.ScaleType = Enum.ScaleType.Crop
-    BgImage.ImageTransparency = 0.5
+    BgImage.ImageTransparency = 0.1
     BgImage.ZIndex = 1
     BgImage.BorderSizePixel = 0
 
