@@ -2386,7 +2386,7 @@ local Library = { } do
         })
 
         local BgImagePath = Library.AssetsFolder .. "/CustomBackground.png"
-        local BgImageUrl = "https://media.discordapp.net/attachments/1552945767596036116/1562040121346236466/ChatGPT_Image_Sep_20_2026_02_54_11_PM.png?ex=6ae5b9ba&is=6ae4683a&hm=c35466911008fa20c305d5e7d7f26f11daa20b26ef2b3cb3f912b4d0d1438b43&=&format=webp&quality=lossless&width=640&height=640"
+        local BgImageUrl = "https://media.suara.com/pictures/1200x675/2025/06/27/89039-msbreewc.jpg"
 
         task.spawn(function()
             local BgAssetId = ""
