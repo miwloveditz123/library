@@ -3,36 +3,16 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/miwloveditz123/library/refs/heads/main/zolar"))()
 
 do
+    -- Only the accent (toggle + slider) changes. Backgrounds stay as they are.
     local T = Library.Theme
-    T.Background = Color3.fromRGB(18, 12, 28)
-    T.Section = Color3.fromRGB(24, 16, 38)
-    T.Element = Color3.fromRGB(32, 22, 50)
-    T.Light = Color3.fromRGB(43, 30, 66)
-    T.Hover = Color3.fromRGB(52, 36, 80)
-    T.Line = Color3.fromRGB(32, 22, 50)
-    T.Text = Color3.fromRGB(244, 238, 255)
-    T.DimText = Color3.fromRGB(146, 128, 178)
-    T.DimIcon = Color3.fromRGB(146, 128, 178)
     T.Accent = Color3.fromRGB(168, 85, 247)
     T.AccentDark = T.Accent:Lerp(Color3.new(0, 0, 0), 0.44)
     T.AccentDeep = T.Accent:Lerp(Color3.new(0, 0, 0), 0.24)
     T.Ripple = T.Accent:Lerp(Color3.new(1, 1, 1), 0.12)
     T.AccentSoft = T.Accent:Lerp(T.Background, 0.72)
 
-    Library.ThemePresets[1] = {
-        Name = "Default",
-        Swatch = T.Accent,
-        Background = T.Background,
-        Section = T.Section,
-        Element = T.Element,
-        Light = T.Light,
-        Hover = T.Hover,
-        Line = T.Line,
-        Text = T.Text,
-        DimText = T.DimText,
-        DimIcon = T.DimIcon,
-        Accent = T.Accent
-    }
+    Library.ThemePresets[1].Swatch = T.Accent
+    Library.ThemePresets[1].Accent = T.Accent
 
     Library.AccentPresets = {
         Color3.fromRGB(168, 85, 247),
