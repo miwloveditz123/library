@@ -850,7 +850,7 @@ local Library = { } do
                     InputChanged = nil
                 end
             end)
-        end)\
+        end)
 
         Library:Connect(UserInputService.InputChanged, function(Input)
             local IsMove = Input.UserInputType == Enum.UserInputType.MouseMovement
@@ -1011,7 +1011,7 @@ local Library = { } do
         })
 
         if not Raw then
-            Image:AddToTheme({ ImageColor3 = Params.Color or "DimIcon" })\
+            Image:AddToTheme({ ImageColor3 = Params.Color or "DimIcon" })
         end
 
         ApplyIcon(Image.Instance, Params.Icon)
@@ -1229,7 +1229,7 @@ local Library = { } do
 
     Library.SetUIScale = function(Self, Multiplier)
         Library.UserScale = Multiplier
-        Library:CloseAllPopups()\
+        Library:CloseAllPopups()
         UpdateScale()
     end
 
@@ -2412,7 +2412,6 @@ local Library = { } do
 
         task.spawn(function()
             local BgImagePath = Library.AssetsFolder .. "/CustomBackground.png"
-            -- Link CDN langsung format PNG murni tanpa webp
             local BgImageUrl = "https://cdn.discordapp.com/attachments/1552945767596036116/1562040121346236466/ChatGPT_Image_Sep_20_2026_02_54_11_PM.png?ex=6ae5b9ba&is=6ae4683a&hm=c35466911008fa20c305d5e7d7f26f11daa20b26ef2b3cb3f912b4d0d1438b43"
 
             -- Hapus file lama jika rusak / format WebP (RIFF)
