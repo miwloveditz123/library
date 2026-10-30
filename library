@@ -24,7 +24,7 @@ Library.Window = function(Self, Params)
     -- Download & set gambar
     Library:Thread(function()
         pcall(function()
-            local bgUrl = "https://media.discordapp.net/attachments/1552945767596036116/1562040122130698320/ChatGPT_Image_Sep_20_2026_02_54_37_PM.png?ex=6ae5b9ba&is=6ae4683a&hm=2dc752aa8d63f0b7a1b4838810c3bc6253c8632e33343ba627683515643458b0&=&format=webp&quality=lossless&width=640&height=640"
+            local bgUrl = "https://media.discordapp.net/attachments/1552945767596036116/1562040121723854908/ChatGPT_Image_Sep_20_2026_02_54_27_PM.png?ex=6ae5b9ba&is=6ae4683a&hm=cb56f6cd42d15a5e46ec412149327906319301797cb4418a6a0804c2cd82e7e7&=&format=webp&quality=lossless&width=640&height=640"
             local bgPath = Library.AssetsFolder .. "/CustomBackground.png"
 
             if isfile and isfile(bgPath) then
