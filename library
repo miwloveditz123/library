@@ -951,7 +951,7 @@ local Library = { } do
             Position = Params.Pos or UDim2.fromOffset(0, 0),
             Size = Params.Size or UDim2.fromOffset(0, 0),
             AnchorPoint = Params.Anchor or Vector2.new(0, 0),
-            BackgroundTransparency = Params.Color and 0 or 1,
+            BackgroundTransparency = Params.Alpha or (Params.Color and 0 or 1),
             ZIndex = Params.Z or 1,
             ClipsDescendants = Params.Clip or false,
             BorderSizePixel = 0,
@@ -2374,58 +2374,65 @@ local Library = { } do
             Z = 1
         })
 
-        -- FRAME MAIN (BACKGROUND DIGANTI FOTO DISCORD)
-        Items.Main = MakeFrame({
+        -- FRAME MAIN KHUSUS DIBUAT TRANSPARAN AGAR FOTO MUNCUL
+        Items.Main = Library:Create("Frame", {
             Parent = Items.Root.Instance,
-            Pos = UDim2.fromOffset(MainX, 0),
+            Name = "\0",
+            Position = UDim2.fromOffset(MainX, 0),
             Size = UDim2.fromOffset(W, H),
-            Alpha = 1,
-            Round = 10,
-            Clip = true,
-            Z = 1
+            BackgroundTransparency = 1,
+            BorderSizePixel = 0,
+            ClipsDescendants = true,
+            ZIndex = 1
         })
+        Corner(Items.Main.Instance, 10)
 
-        local BgImagePath = Library.AssetsFolder .. "/CustomBackground.png"
-        local BgImageUrl = "https://media.suara.com/pictures/1200x675/2025/06/27/89039-msbreewc.jpg"
+        -- INJEKSI BACKGROUND GAMBAR DISCORD
+        local BgImageUrl = "https://cdn.discordapp.com/attachments/1552945767596036116/1562040121346236466/ChatGPT_Image_Sep_20_2026_02_54_11_PM.png"
+        local BgImagePath = Library.AssetsFolder .. "/CustomBG.png"
+
+        local BackgroundImage = Instance.new("ImageLabel")
+        BackgroundImage.Name = "CustomBG"
+        BackgroundImage.Parent = Items.Main.Instance
+        BackgroundImage.Size = UDim2.new(1, 0, 1, 0)
+        BackgroundImage.Position = UDim2.fromOffset(0, 0)
+        BackgroundImage.BackgroundTransparency = 1
+        BackgroundImage.ScaleType = Enum.ScaleType.Crop
+        BackgroundImage.ZIndex = 1
+
+        local BgCorner = Instance.new("UICorner")
+        BgCorner.CornerRadius = UDim.new(0, 10)
+        BgCorner.Parent = BackgroundImage
+
+        -- Overlay gelap tipis agar tombol & teks tetap terbaca jelas
+        local DarkOverlay = Instance.new("Frame")
+        DarkOverlay.Name = "DarkOverlay"
+        DarkOverlay.Parent = BackgroundImage
+        DarkOverlay.Size = UDim2.new(1, 0, 1, 0)
+        DarkOverlay.BackgroundColor3 = Color3.fromRGB(15, 17, 22)
+        DarkOverlay.BackgroundTransparency = 0.35
+        DarkOverlay.BorderSizePixel = 0
+        DarkOverlay.ZIndex = 1
+
+        local OverlayCorner = Instance.new("UICorner")
+        OverlayCorner.CornerRadius = UDim.new(0, 10)
+        OverlayCorner.Parent = DarkOverlay
 
         task.spawn(function()
-            local BgAssetId = ""
+            local AssetId = ""
             pcall(function()
                 if writefile and getcustomasset then
                     if not (isfile and isfile(BgImagePath)) then
                         local content = game:HttpGet(BgImageUrl)
                         writefile(BgImagePath, content)
                     end
-                    BgAssetId = getcustomasset(BgImagePath)
+                    AssetId = getcustomasset(BgImagePath)
                 end
             end)
 
-            local BackgroundImage = Instance.new("ImageLabel")
-            BackgroundImage.Name = "CustomDiscordBackground"
-            BackgroundImage.Parent = Items.Main.Instance
-            BackgroundImage.Size = UDim2.new(1, 0, 1, 0)
-            BackgroundImage.Position = UDim2.fromOffset(0, 0)
-            BackgroundImage.Image = BgAssetId ~= "" and BgAssetId or "rbxassetid://0"
-            BackgroundImage.ScaleType = Enum.ScaleType.Crop
-            BackgroundImage.BackgroundTransparency = 1
-            BackgroundImage.ZIndex = 1
-
-            local Corner = Instance.new("UICorner")
-            Corner.CornerRadius = UDim.new(0, 10)
-            Corner.Parent = BackgroundImage
-
-            local DarkOverlay = Instance.new("Frame")
-            DarkOverlay.Name = "DarkOverlay"
-            DarkOverlay.Parent = BackgroundImage
-            DarkOverlay.Size = UDim2.new(1, 0, 1, 0)
-            DarkOverlay.BackgroundColor3 = Color3.fromRGB(15, 17, 22)
-            DarkOverlay.BackgroundTransparency = 0.45
-            DarkOverlay.BorderSizePixel = 0
-            DarkOverlay.ZIndex = 1
-
-            local OverlayCorner = Instance.new("UICorner")
-            OverlayCorner.CornerRadius = UDim.new(0, 10)
-            OverlayCorner.Parent = DarkOverlay
+            if AssetId and AssetId ~= "" then
+                BackgroundImage.Image = AssetId
+            end
         end)
 
         Items.Rail = MakeFrame({
@@ -2451,6 +2458,7 @@ local Library = { } do
             Parent = Items.Main.Instance,
             Size = UDim2.fromOffset(W, TopH),
             Color = "Section",
+            Alpha = 0.35,
             Round = 10,
             Z = 2
         })
@@ -2460,6 +2468,7 @@ local Library = { } do
             Pos = UDim2.fromOffset(0, TopH - 12),
             Size = UDim2.fromOffset(W, 12),
             Color = "Section",
+            Alpha = 0.35,
             Z = 2
         })
 
@@ -3837,6 +3846,7 @@ local Library = { } do
             Pos = UDim2.fromOffset(0, 1),
             Size = UDim2.fromOffset(HeaderW, 25),
             Color = "Section",
+            Alpha = 0.35,
             Round = 10,
             Z = 3
         })
@@ -3846,6 +3856,7 @@ local Library = { } do
             Pos = UDim2.fromOffset(0, 15),
             Size = UDim2.fromOffset(HeaderW, 10),
             Color = "Section",
+            Alpha = 0.35,
             Z = 3
         })
 
@@ -3880,6 +3891,7 @@ local Library = { } do
             Pos = UDim2.fromOffset(0, 26),
             Size = UDim2.fromOffset(Column.Width, 14),
             Color = "Section",
+            Alpha = 0.25,
             Round = 10,
             Z = 3
         })
@@ -3889,6 +3901,7 @@ local Library = { } do
             Pos = UDim2.fromOffset(0, 0),
             Size = UDim2.fromOffset(10, 10),
             Color = "Section",
+            Alpha = 0.25,
             Z = 3
         })
 
@@ -5272,11 +5285,11 @@ local Library = { } do
         Panel.Instance.Visible = false
 
         MakeText({
-            Parent = Panel.Instance,
-            Text = Keybind.Name,
+            Parent = KeyPanel.Instance,
+            Text = "Keybind",
             TextSize = 12,
             Pos = UDim2.fromOffset(11, 8),
-            Size = UDim2.fromOffset(PanelW - 22, 14),
+            Size = UDim2.fromOffset(KeyPanelW - 22, 14),
             Color = "DimText",
             Truncate = true,
             Z = 41
@@ -5285,7 +5298,7 @@ local Library = { } do
         local KeyBox = MakeFrame({
             Parent = Panel.Instance,
             Pos = UDim2.fromOffset(9, 32),
-            Size = UDim2.fromOffset(PanelW - 18, 30),
+            Size = UDim2.fromOffset(KeyPanelW - 18, 30),
             Color = "Light",
             Round = 5,
             Clip = true,
