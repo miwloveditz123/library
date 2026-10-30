@@ -1,5 +1,5 @@
 -- Load 100% original Da7mu Zolar UI Library
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Da7mu/Ui-Collection/refs/heads/main/Zolar%20Ui/Library.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/miwloveditz123/library/refs/heads/main/zolar"))()
 
 -- Patch: tambah background gambar ke Window
 local OriginalWindow = Library.Window
