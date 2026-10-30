@@ -1,53 +1,217 @@
--- Load 100% original Da7mu Zolar UI Library
+-- Zolar UI patch: purple theme (novaexploit), minimize bubble for mobile, MenuKeybind = Z.
+-- Usage: local Zolar = loadstring(game:HttpGet("<this file>"))()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/miwloveditz123/library/refs/heads/main/zolar"))()
 
--- Patch: tambah background gambar ke Window
-local OriginalWindow = Library.Window
+do
+    local T = Library.Theme
+    T.Background = Color3.fromRGB(18, 12, 28)
+    T.Section = Color3.fromRGB(24, 16, 38)
+    T.Element = Color3.fromRGB(32, 22, 50)
+    T.Light = Color3.fromRGB(43, 30, 66)
+    T.Hover = Color3.fromRGB(52, 36, 80)
+    T.Line = Color3.fromRGB(32, 22, 50)
+    T.Text = Color3.fromRGB(244, 238, 255)
+    T.DimText = Color3.fromRGB(146, 128, 178)
+    T.DimIcon = Color3.fromRGB(146, 128, 178)
+    T.Accent = Color3.fromRGB(168, 85, 247)
+    T.AccentDark = T.Accent:Lerp(Color3.new(0, 0, 0), 0.44)
+    T.AccentDeep = T.Accent:Lerp(Color3.new(0, 0, 0), 0.24)
+    T.Ripple = T.Accent:Lerp(Color3.new(1, 1, 1), 0.12)
+    T.AccentSoft = T.Accent:Lerp(T.Background, 0.72)
 
-Library.Window = function(Self, Params)
-    local Window = OriginalWindow(Self, Params)
+    Library.ThemePresets[1] = {
+        Name = "Default",
+        Swatch = T.Accent,
+        Background = T.Background,
+        Section = T.Section,
+        Element = T.Element,
+        Light = T.Light,
+        Hover = T.Hover,
+        Line = T.Line,
+        Text = T.Text,
+        DimText = T.DimText,
+        DimIcon = T.DimIcon,
+        Accent = T.Accent
+    }
 
-    -- Buat ImageLabel background
-    local BgImage = Instance.new("ImageLabel")
-    BgImage.Name = "\0"
-    BgImage.Parent = Window.Items.Main.Instance
-    BgImage.BackgroundTransparency = 1
-    BgImage.Size = UDim2.new(1, 0, 1, 0)
-    BgImage.Position = UDim2.fromOffset(0, 0)
-    BgImage.ScaleType = Enum.ScaleType.Crop
-    BgImage.ImageTransparency = 0
-    BgImage.ZIndex = 1
-    BgImage.BorderSizePixel = 0
+    Library.AccentPresets = {
+        Color3.fromRGB(168, 85, 247),
+        Color3.fromRGB(139, 92, 246),
+        Color3.fromRGB(192, 132, 252),
+        Color3.fromRGB(120, 60, 220),
+        Color3.fromRGB(229, 168, 255)
+    }
 
-    Instance.new("UICorner", BgImage).CornerRadius = UDim.new(0, 10)
+    Library.MenuKeybind = Enum.KeyCode.Z
+    Library.ThemeDirty = true
 
-    -- Download & set gambar
-    Library:Thread(function()
-        pcall(function()
-            local bgUrl = "https://ibb.co.com/JFcBJ2g1"
-            local bgPath = Library.AssetsFolder .. "/CustomBackground.png"
+    local function Round(Object, Radius)
+        local Corner = Instance.new("UICorner")
+        Corner.CornerRadius = UDim.new(0, Radius)
+        Corner.Parent = Object
+    end
 
-            if isfile and isfile(bgPath) then
-                local existing = readfile(bgPath)
-                if #existing < 2000 or string.sub(existing, 1, 4) == "RIFF" then
-                    delfile(bgPath)
-                end
+    local function MakeButton(Parent, Z)
+        local Button = Instance.new("TextButton")
+        Button.Name = "\0"
+        Button.Text = ""
+        Button.AutoButtonColor = false
+        Button.BackgroundTransparency = 1
+        Button.Size = UDim2.new(1, 0, 1, 0)
+        Button.ZIndex = Z
+        Button.BorderSizePixel = 0
+        Button.Parent = Parent
+        return Button
+    end
+
+    local function Build(Window)
+        local Items = Window.Items
+        local Holder = Items.Root.Instance.Parent
+        local Scale = Library:GetScreenScale()
+
+        -- Floating bubble (only visible while the window is folded away).
+        local Bubble = Instance.new("TextButton")
+        Bubble.Name = "\0"
+        Bubble.Size = UDim2.fromOffset(44, 44)
+        Bubble.AnchorPoint = Vector2.new(0, 0.5)
+        Bubble.Position = UDim2.new(0, 16, 0.5, 0)
+        Bubble.BackgroundColor3 = Library.Theme.Accent
+        Bubble.Text = ""
+        Bubble.AutoButtonColor = false
+        Bubble.Visible = false
+        Bubble.ZIndex = 5
+        Bubble.BorderSizePixel = 0
+        Bubble.Parent = Holder
+        Round(Bubble, 22)
+
+        local Glyph = Instance.new("ImageLabel")
+        Glyph.BackgroundTransparency = 1
+        Glyph.Size = UDim2.fromOffset(20, 20)
+        Glyph.AnchorPoint = Vector2.new(0.5, 0.5)
+        Glyph.Position = UDim2.new(0.5, 0, 0.5, 0)
+        Glyph.Image = "rbxasset://textures/ui/Keyboard/close.png"
+        Glyph.ImageColor3 = Color3.new(1, 1, 1)
+        Glyph.Parent = Bubble
+
+        -- Small minimize circle that lives directly above Unload.
+        -- Unload sits at (14, 236) inside the 272px profile panel, so 236 - 28 - 6 = 202.
+        local Minimize = Instance.new("Frame")
+        Minimize.Name = "\0"
+        Minimize.Size = UDim2.fromOffset(28, 28)
+        Minimize.Position = UDim2.fromOffset(14, 202)
+        Minimize.BackgroundColor3 = Library.Theme.Light
+        Minimize.BorderSizePixel = 0
+        Minimize.ZIndex = 46
+        Minimize.Parent = Holder
+        Round(Minimize, 14)
+
+        local Bar = Instance.new("Frame")
+        Bar.Name = "\0"
+        Bar.Size = UDim2.fromOffset(12, 2)
+        Bar.AnchorPoint = Vector2.new(0.5, 0.5)
+        Bar.Position = UDim2.new(0.5, 0, 0.5, 0)
+        Bar.BackgroundColor3 = Library.Theme.DimText
+        Bar.BorderSizePixel = 0
+        Bar.ZIndex = 48
+        Bar.Parent = Minimize
+        Round(Bar, 2)
+
+        local MinimizeHit = MakeButton(Minimize, 49)
+
+        local function SyncProfile()
+            local Profile = Window.Profile
+            if not Profile or not Profile.Frame then return end
+
+            local Panel = Profile.Frame.Instance
+            local Live = Panel.Visible and Panel:IsDescendantOf(Holder)
+
+            Minimize.Visible = Live
+
+            if Live then
+                Minimize.Position = Panel.Position + UDim2.fromOffset(14, 202)
             end
+        end
 
-            if not isfile or not isfile(bgPath) then
-                local body = game:HttpGet(bgUrl)
-                if #body > 2000 and string.sub(body, 1, 4) ~= "RIFF" then
-                    writefile(bgPath, body)
-                end
-            end
+        local function Fold()
+            Window:SetOpen(false)
+            SyncProfile()
+        end
 
-            if isfile and isfile(bgPath) then
-                BgImage.Image = getcustomasset(bgPath)
+        MinimizeHit.MouseButton1Click:Connect(Fold)
+        MinimizeHit.Activated:Connect(Fold)
+
+        -- Keep the bubble in sync with the Z keybind and the profile toggle.
+        local OriginalSetOpen = Window.SetOpen
+        Window.SetOpen = function(Self, Bool)
+            OriginalSetOpen(Self, Bool)
+            Bubble.Visible = not Bool
+            SyncProfile()
+        end
+
+        local Profile = Window.Profile
+        if Profile then
+            local OriginalProfileOpen = Profile.SetOpen
+            Profile.SetOpen = function(Self, Bool)
+                OriginalProfileOpen(Self, Bool)
+                task.defer(SyncProfile)
             end
+        end
+
+        local DragStart, DragPos, Dragged
+        Bubble.InputBegan:Connect(function(Input)
+            local IsClick = Input.UserInputType == Enum.UserInputType.MouseButton1
+            local IsTouch = Input.UserInputType == Enum.UserInputType.Touch
+            if not IsClick and not IsTouch then return end
+            DragStart = Input.Position
+            DragPos = Bubble.Position
+            Dragged = false
         end)
-    end)
+        Bubble.InputChanged:Connect(function(Input)
+            if not DragStart then return end
+            local IsMove = Input.UserInputType == Enum.UserInputType.MouseMovement
+            local IsTouch = Input.UserInputType == Enum.UserInputType.Touch
+            if not IsMove and not IsTouch then return end
 
-    return Window
+            local Delta = Input.Position - DragStart
+            if Delta.Magnitude > 6 then Dragged = true end
+            if not Dragged then return end
+
+            local Half = Bubble.AbsoluteSize / Scale
+            local Limit = workspace.CurrentCamera.ViewportSize / Scale
+            local X = DragPos.X.Offset + Delta.X / Scale
+            local Y = DragPos.Y.Offset + Delta.Y / Scale
+
+            Bubble.Position = UDim2.fromOffset(
+                math.clamp(X, 0, Limit.X - Half.X),
+                math.clamp(Y, Half.Y, Limit.Y - Half.Y)
+            )
+        end)
+        Bubble.InputEnded:Connect(function()
+            DragStart = nil
+        end)
+
+        Bubble.MouseButton1Click:Connect(function()
+            if Dragged then
+                Dragged = false
+                return
+            end
+            Window:SetOpen(true)
+        end)
+
+        Window.Bubble = Bubble
+        Window.MinimizeButton = Minimize
+        Window.Fold = Fold
+    end
+
+    local OriginalWindow = Library.Window
+    Library.Window = function(Self, Params)
+        local Window = OriginalWindow(Self, Params)
+        task.defer(function()
+            pcall(Build, Window)
+        end)
+        return Window
+    end
 end
 
+getgenv().Zolar = Library
 return Library
