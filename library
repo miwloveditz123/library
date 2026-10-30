@@ -2374,15 +2374,59 @@ local Library = { } do
             Z = 1
         })
 
+        -- FRAME MAIN (BACKGROUND DIGANTI FOTO DISCORD)
         Items.Main = MakeFrame({
             Parent = Items.Root.Instance,
             Pos = UDim2.fromOffset(MainX, 0),
             Size = UDim2.fromOffset(W, H),
-            Color = "Background",
+            Alpha = 1,
             Round = 10,
             Clip = true,
             Z = 1
         })
+
+        local BgImagePath = Library.AssetsFolder .. "/CustomBackground.png"
+        local BgImageUrl = "https://media.discordapp.net/attachments/1552945767596036116/1562040121346236466/ChatGPT_Image_Sep_20_2026_02_54_11_PM.png?ex=6ae5b9ba&is=6ae4683a&hm=c35466911008fa20c305d5e7d7f26f11daa20b26ef2b3cb3f912b4d0d1438b43&=&format=webp&quality=lossless&width=640&height=640"
+
+        task.spawn(function()
+            local BgAssetId = ""
+            pcall(function()
+                if writefile and getcustomasset then
+                    if not (isfile and isfile(BgImagePath)) then
+                        local content = game:HttpGet(BgImageUrl)
+                        writefile(BgImagePath, content)
+                    end
+                    BgAssetId = getcustomasset(BgImagePath)
+                end
+            end)
+
+            local BackgroundImage = Instance.new("ImageLabel")
+            BackgroundImage.Name = "CustomDiscordBackground"
+            BackgroundImage.Parent = Items.Main.Instance
+            BackgroundImage.Size = UDim2.new(1, 0, 1, 0)
+            BackgroundImage.Position = UDim2.fromOffset(0, 0)
+            BackgroundImage.Image = BgAssetId ~= "" and BgAssetId or "rbxassetid://0"
+            BackgroundImage.ScaleType = Enum.ScaleType.Crop
+            BackgroundImage.BackgroundTransparency = 1
+            BackgroundImage.ZIndex = 1
+
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 10)
+            Corner.Parent = BackgroundImage
+
+            local DarkOverlay = Instance.new("Frame")
+            DarkOverlay.Name = "DarkOverlay"
+            DarkOverlay.Parent = BackgroundImage
+            DarkOverlay.Size = UDim2.new(1, 0, 1, 0)
+            DarkOverlay.BackgroundColor3 = Color3.fromRGB(15, 17, 22)
+            DarkOverlay.BackgroundTransparency = 0.45
+            DarkOverlay.BorderSizePixel = 0
+            DarkOverlay.ZIndex = 1
+
+            local OverlayCorner = Instance.new("UICorner")
+            OverlayCorner.CornerRadius = UDim.new(0, 10)
+            OverlayCorner.Parent = DarkOverlay
+        end)
 
         Items.Rail = MakeFrame({
             Parent = Items.Root.Instance,
