@@ -2978,17 +2978,55 @@ local Library = { } do
 
         local BadgeGlow = MakeAccentShadow(Badge.Instance, UDim2.fromOffset(0, 0), UDim.new(0, 14), 0.55)
 
-        local BadgeIcon = MakeImage({
+        -- Accent "N": two vertical posts, the left rising diagonal, and the right post.
+        local BadgeMark = MakeFrame({
             Parent = Badge.Instance,
-            Anchor = Vector2.new(0.5, 0.5),
-            Pos = UDim2.new(0.5, 0, 0.5, 0),
+            Pos = UDim2.fromOffset(14, 14),
             Size = UDim2.fromOffset(20, 20),
-            Raw = Color3.new(1, 1, 1),
-            Fit = true,
             Z = 51
         })
 
-        ApplyIcon(BadgeIcon.Instance, Window.Icon)
+        MakeFrame({
+            Parent = BadgeMark.Instance,
+            Pos = UDim2.fromOffset(0, 0),
+            Size = UDim2.fromOffset(3, 20),
+            Color = "Accent",
+            Round = 2,
+            Z = 52
+        })
+
+        MakeFrame({
+            Parent = BadgeMark.Instance,
+            Pos = UDim2.fromOffset(17, 0),
+            Size = UDim2.fromOffset(3, 20),
+            Color = "Accent",
+            Round = 2,
+            Z = 52
+        })
+
+        local Stroke = MakeFrame({
+            Parent = BadgeMark.Instance,
+            Anchor = Vector2.new(0, 0),
+            Pos = UDim2.fromOffset(1, 0),
+            Size = UDim2.fromOffset(3, 21),
+            Color = "Accent",
+            Z = 52
+        })
+
+        Stroke.Instance.Rotation = 22
+
+        local BadgeDot = Library:Create("Frame", {
+            Parent = Badge.Instance,
+            Name = "\0",
+            AnchorPoint = Vector2.new(1, 0),
+            Position = UDim2.new(1, -5, 0, 5),
+            Size = UDim2.fromOffset(7, 7),
+            BackgroundColor3 = Library.Theme.Accent,
+            BorderSizePixel = 0,
+            ZIndex = 52
+        }):AddToTheme({ BackgroundColor3 = "Accent" })
+
+        Corner(BadgeDot.Instance, 4)
 
         local BadgeDot = Library:Create("Frame", {
             Parent = Badge.Instance,
