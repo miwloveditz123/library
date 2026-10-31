@@ -2913,24 +2913,38 @@ local Library = { } do
             Z = 46
         })
 
-        -- Mobile: small circle above Unload that folds the window into a bubble.
+        -- Mobile: compact minimize pill above Unload. Folds the window into a floating badge.
         local Minimize = MakeFrame({
             Parent = ProfilePanel.Instance,
-            Pos = UDim2.fromOffset(14, 202),
-            Size = UDim2.fromOffset(28, 28),
+            Pos = UDim2.fromOffset(14, 198),
+            Size = UDim2.fromOffset(ProfileW - 28, 30),
             Color = "Light",
-            Round = 14,
+            Round = 8,
             Clip = true,
             Z = 46
         })
 
-        MakeFrame({
+        local MinSweep = MakeSweep(Minimize.Instance, 47)
+        MinSweep.Instance.BackgroundTransparency = 1
+
+        MakeImage({
             Parent = Minimize.Instance,
-            Anchor = Vector2.new(0.5, 0.5),
-            Pos = UDim2.new(0.5, 0, 0.5, 0),
-            Size = UDim2.fromOffset(12, 2),
+            Icon = "chevrons-down-up",
+            Anchor = Vector2.new(0, 0.5),
+            Pos = UDim2.new(0, 12, 0.5, 0),
+            Size = UDim2.fromOffset(14, 14),
             Color = "DimText",
-            Round = 2,
+            Z = 48
+        })
+
+        MakeText({
+            Parent = Minimize.Instance,
+            Text = "Minimize",
+            TextSize = 14,
+            Anchor = Vector2.new(0, 0.5),
+            Pos = UDim2.new(0, 34, 0.5, 0),
+            Size = UDim2.fromOffset(ProfileW - 70, 20),
+            Color = "Text",
             Z = 48
         })
 
@@ -2939,31 +2953,64 @@ local Library = { } do
             Z = 49
         })
 
-        local Bubble = Library:Create("TextButton", {
+        local Badge = Library:Create("TextButton", {
             Parent = Library.Holder.Instance,
             Name = "\0",
             Text = "",
             AutoButtonColor = false,
-            Size = UDim2.fromOffset(44, 44),
+            Size = UDim2.fromOffset(48, 48),
             AnchorPoint = Vector2.new(0, 0.5),
-            Position = UDim2.new(0, 16, 0.5, 0),
-            BackgroundColor3 = Library.Theme.Accent,
+            Position = UDim2.fromOffset(18, 0),
+            BackgroundColor3 = Library.Theme.Background,
             BorderSizePixel = 0,
             Visible = false,
             ZIndex = 50
-        }):AddToTheme({ BackgroundColor3 = "Accent" })
+        }):AddToTheme({ BackgroundColor3 = "Background" })
 
-        Corner(Bubble.Instance, 22)
+        Corner(Badge.Instance, 14)
 
-        MakeImage({
-            Parent = Bubble.Instance,
-            Icon = "minus",
+        local BadgeStroke = Library:Create("UIStroke", {
+            Parent = Badge.Instance,
+            Color = Library.Theme.Accent,
+            Thickness = 1.5,
+            Transparency = 0.25
+        }):AddToTheme({ Color = "Accent" })
+
+        local BadgeGlow = MakeAccentShadow(Badge.Instance, UDim2.fromOffset(0, 0), UDim.new(0, 14), 0.55)
+
+        local BadgeIcon = MakeImage({
+            Parent = Badge.Instance,
             Anchor = Vector2.new(0.5, 0.5),
             Pos = UDim2.new(0.5, 0, 0.5, 0),
             Size = UDim2.fromOffset(20, 20),
             Raw = Color3.new(1, 1, 1),
+            Fit = true,
             Z = 51
         })
+
+        ApplyIcon(BadgeIcon.Instance, Window.Icon)
+
+        local BadgeDot = Library:Create("Frame", {
+            Parent = Badge.Instance,
+            Name = "\0",
+            AnchorPoint = Vector2.new(1, 0),
+            Position = UDim2.new(1, -5, 0, 5),
+            Size = UDim2.fromOffset(7, 7),
+            BackgroundColor3 = Library.Theme.Accent,
+            BorderSizePixel = 0,
+            ZIndex = 52
+        }):AddToTheme({ BackgroundColor3 = "Accent" })
+
+        Corner(BadgeDot.Instance, 4)
+
+        local function PlaceBadge()
+            local Vp = workspace.CurrentCamera.ViewportSize
+            local Scale = Library:GetScreenScale()
+
+            Badge.Instance.Position = UDim2.fromOffset(18, Vp.Y / (2 * Scale))
+        end
+
+        PlaceBadge()
 
         Minimize:OnHover(function()
             Minimize:Tween({ BackgroundColor3 = Library.Theme.Hover })
@@ -2972,14 +3019,22 @@ local Library = { } do
         end)
 
         MinimizeHit:Connect("MouseButton1Down", function()
+            PlaySweep(MinSweep.Instance)
             Window:SetOpen(false)
         end)
 
-        Bubble:Connect("MouseButton1Down", function()
+        Badge:Connect("MouseButton1Down", function()
             Window:SetOpen(true)
         end)
 
-        Bubble:MakeDraggable()
+        Badge:MakeDraggable()
+
+        Library:Connect(workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"), function()
+            task.wait()
+            PlaceBadge()
+        end)
+
+        Window.Badge = Badge
 
         MakeText({
             Parent = UnloadButton.Instance,
@@ -3130,8 +3185,8 @@ local Library = { } do
                 Items.Root:FadeDescendants(Bool)
             end
 
-            if Bubble then
-                Bubble.Instance.Visible = not Bool
+            if Badge then
+                Badge.Instance.Visible = not Bool
             end
         end
 
