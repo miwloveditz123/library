@@ -210,11 +210,11 @@ local Library = { } do
         Text = Color3.fromRGB(255, 255, 255),
         DimText = Color3.fromRGB(120, 120, 120),
         DimIcon = Color3.fromRGB(120, 120, 120),
-        Accent = Color3.fromRGB(179, 165, 255)
+        Accent = Color3.fromRGB(168, 85, 247)
     }
 
     Library.AccentPresets = {
-        Color3.fromRGB(179, 165, 255),
+        Color3.fromRGB(168, 85, 247),
         Color3.fromRGB(120, 132, 255),
         Color3.fromRGB(96, 170, 255),
         Color3.fromRGB(72, 214, 168),
@@ -321,7 +321,7 @@ local Library = { } do
     Library.TouchButtons = { }
     Library.TouchShields = { }
     Library.Searchables = { }
-    Library.MenuKeybind = Enum.KeyCode.G
+    Library.MenuKeybind = Enum.KeyCode.Z
     Library.Binding = false
     Library.UserScale = 1
     Library.Silent = false
@@ -2913,6 +2913,74 @@ local Library = { } do
             Z = 46
         })
 
+        -- Mobile: small circle above Unload that folds the window into a bubble.
+        local Minimize = MakeFrame({
+            Parent = ProfilePanel.Instance,
+            Pos = UDim2.fromOffset(14, 202),
+            Size = UDim2.fromOffset(28, 28),
+            Color = "Light",
+            Round = 14,
+            Clip = true,
+            Z = 46
+        })
+
+        MakeFrame({
+            Parent = Minimize.Instance,
+            Anchor = Vector2.new(0.5, 0.5),
+            Pos = UDim2.new(0.5, 0, 0.5, 0),
+            Size = UDim2.fromOffset(12, 2),
+            Color = "DimText",
+            Round = 2,
+            Z = 48
+        })
+
+        local MinimizeHit = MakeButton({
+            Parent = Minimize.Instance,
+            Z = 49
+        })
+
+        local Bubble = Library:Create("TextButton", {
+            Parent = Library.Holder.Instance,
+            Name = "\0",
+            Text = "",
+            AutoButtonColor = false,
+            Size = UDim2.fromOffset(44, 44),
+            AnchorPoint = Vector2.new(0, 0.5),
+            Position = UDim2.new(0, 16, 0.5, 0),
+            BackgroundColor3 = Library.Theme.Accent,
+            BorderSizePixel = 0,
+            Visible = false,
+            ZIndex = 50
+        }):AddToTheme({ BackgroundColor3 = "Accent" })
+
+        Corner(Bubble.Instance, 22)
+
+        MakeImage({
+            Parent = Bubble.Instance,
+            Icon = "minus",
+            Anchor = Vector2.new(0.5, 0.5),
+            Pos = UDim2.new(0.5, 0, 0.5, 0),
+            Size = UDim2.fromOffset(20, 20),
+            Raw = Color3.new(1, 1, 1),
+            Z = 51
+        })
+
+        Minimize:OnHover(function()
+            Minimize:Tween({ BackgroundColor3 = Library.Theme.Hover })
+        end, function()
+            Minimize:Tween({ BackgroundColor3 = Library.Theme.Light })
+        end)
+
+        MinimizeHit:Connect("MouseButton1Down", function()
+            Window:SetOpen(false)
+        end)
+
+        Bubble:Connect("MouseButton1Down", function()
+            Window:SetOpen(true)
+        end)
+
+        Bubble:MakeDraggable()
+
         MakeText({
             Parent = UnloadButton.Instance,
             Text = "Unload",
@@ -3060,6 +3128,10 @@ local Library = { } do
                 Window:PlayIntro()
             else
                 Items.Root:FadeDescendants(Bool)
+            end
+
+            if Bubble then
+                Bubble.Instance.Visible = not Bool
             end
         end
 
