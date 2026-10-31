@@ -210,11 +210,11 @@ local Library = { } do
         Text = Color3.fromRGB(255, 255, 255),
         DimText = Color3.fromRGB(120, 120, 120),
         DimIcon = Color3.fromRGB(120, 120, 120),
-        Accent = Color3.fromRGB(168, 85, 247)
+        Accent = Color3.fromRGB(179, 165, 255)
     }
 
     Library.AccentPresets = {
-        Color3.fromRGB(168, 85, 247),
+        Color3.fromRGB(179, 165, 255),
         Color3.fromRGB(120, 132, 255),
         Color3.fromRGB(96, 170, 255),
         Color3.fromRGB(72, 214, 168),
@@ -321,7 +321,7 @@ local Library = { } do
     Library.TouchButtons = { }
     Library.TouchShields = { }
     Library.Searchables = { }
-    Library.MenuKeybind = Enum.KeyCode.Z
+    Library.MenuKeybind = Enum.KeyCode.G
     Library.Binding = false
     Library.UserScale = 1
     Library.Silent = false
@@ -2913,167 +2913,6 @@ local Library = { } do
             Z = 46
         })
 
-        -- Mobile: compact minimize pill above Unload. Folds the window into a floating badge.
-        local Minimize = MakeFrame({
-            Parent = ProfilePanel.Instance,
-            Pos = UDim2.fromOffset(14, 198),
-            Size = UDim2.fromOffset(ProfileW - 28, 30),
-            Color = "Light",
-            Round = 8,
-            Clip = true,
-            Z = 46
-        })
-
-        local MinSweep = MakeSweep(Minimize.Instance, 47)
-        MinSweep.Instance.BackgroundTransparency = 1
-
-        MakeImage({
-            Parent = Minimize.Instance,
-            Icon = "chevrons-down-up",
-            Anchor = Vector2.new(0, 0.5),
-            Pos = UDim2.new(0, 12, 0.5, 0),
-            Size = UDim2.fromOffset(14, 14),
-            Color = "DimText",
-            Z = 48
-        })
-
-        MakeText({
-            Parent = Minimize.Instance,
-            Text = "Minimize",
-            TextSize = 14,
-            Anchor = Vector2.new(0, 0.5),
-            Pos = UDim2.new(0, 34, 0.5, 0),
-            Size = UDim2.fromOffset(ProfileW - 70, 20),
-            Color = "Text",
-            Z = 48
-        })
-
-        local MinimizeHit = MakeButton({
-            Parent = Minimize.Instance,
-            Z = 49
-        })
-
-        local Badge = Library:Create("TextButton", {
-            Parent = Library.Holder.Instance,
-            Name = "\0",
-            Text = "",
-            AutoButtonColor = false,
-            Size = UDim2.fromOffset(48, 48),
-            AnchorPoint = Vector2.new(0, 0.5),
-            Position = UDim2.fromOffset(18, 0),
-            BackgroundColor3 = Library.Theme.Background,
-            BorderSizePixel = 0,
-            Visible = false,
-            ZIndex = 50
-        }):AddToTheme({ BackgroundColor3 = "Background" })
-
-        Corner(Badge.Instance, 14)
-
-        local BadgeStroke = Library:Create("UIStroke", {
-            Parent = Badge.Instance,
-            Color = Library.Theme.Accent,
-            Thickness = 1.5,
-            Transparency = 0.25
-        }):AddToTheme({ Color = "Accent" })
-
-        local BadgeGlow = MakeAccentShadow(Badge.Instance, UDim2.fromOffset(0, 0), UDim.new(0, 14), 0.55)
-
-        -- Accent "N": two vertical posts, the left rising diagonal, and the right post.
-        local BadgeMark = MakeFrame({
-            Parent = Badge.Instance,
-            Pos = UDim2.fromOffset(14, 14),
-            Size = UDim2.fromOffset(20, 20),
-            Z = 51
-        })
-
-        MakeFrame({
-            Parent = BadgeMark.Instance,
-            Pos = UDim2.fromOffset(0, 0),
-            Size = UDim2.fromOffset(3, 20),
-            Color = "Accent",
-            Round = 2,
-            Z = 52
-        })
-
-        MakeFrame({
-            Parent = BadgeMark.Instance,
-            Pos = UDim2.fromOffset(17, 0),
-            Size = UDim2.fromOffset(3, 20),
-            Color = "Accent",
-            Round = 2,
-            Z = 52
-        })
-
-        local Stroke = MakeFrame({
-            Parent = BadgeMark.Instance,
-            Anchor = Vector2.new(0, 0),
-            Pos = UDim2.fromOffset(1, 0),
-            Size = UDim2.fromOffset(3, 21),
-            Color = "Accent",
-            Z = 52
-        })
-
-        Stroke.Instance.Rotation = 22
-
-        local BadgeDot = Library:Create("Frame", {
-            Parent = Badge.Instance,
-            Name = "\0",
-            AnchorPoint = Vector2.new(1, 0),
-            Position = UDim2.new(1, -5, 0, 5),
-            Size = UDim2.fromOffset(7, 7),
-            BackgroundColor3 = Library.Theme.Accent,
-            BorderSizePixel = 0,
-            ZIndex = 52
-        }):AddToTheme({ BackgroundColor3 = "Accent" })
-
-        Corner(BadgeDot.Instance, 4)
-
-        local BadgeDot = Library:Create("Frame", {
-            Parent = Badge.Instance,
-            Name = "\0",
-            AnchorPoint = Vector2.new(1, 0),
-            Position = UDim2.new(1, -5, 0, 5),
-            Size = UDim2.fromOffset(7, 7),
-            BackgroundColor3 = Library.Theme.Accent,
-            BorderSizePixel = 0,
-            ZIndex = 52
-        }):AddToTheme({ BackgroundColor3 = "Accent" })
-
-        Corner(BadgeDot.Instance, 4)
-
-        local function PlaceBadge()
-            local Vp = workspace.CurrentCamera.ViewportSize
-            local Scale = Library:GetScreenScale()
-
-            Badge.Instance.Position = UDim2.fromOffset(18, Vp.Y / (2 * Scale))
-        end
-
-        PlaceBadge()
-
-        Minimize:OnHover(function()
-            Minimize:Tween({ BackgroundColor3 = Library.Theme.Hover })
-        end, function()
-            Minimize:Tween({ BackgroundColor3 = Library.Theme.Light })
-        end)
-
-        MinimizeHit:Connect("MouseButton1Down", function()
-            PlaySweep(MinSweep.Instance)
-            Window:SetOpen(false)
-        end)
-
-        Badge:Connect("MouseButton1Down", function()
-            Window:SetOpen(true)
-        end)
-
-        Badge:MakeDraggable()
-
-        Library:Connect(workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"), function()
-            task.wait()
-            PlaceBadge()
-        end)
-
-        Window.Badge = Badge
-
         MakeText({
             Parent = UnloadButton.Instance,
             Text = "Unload",
@@ -3221,10 +3060,6 @@ local Library = { } do
                 Window:PlayIntro()
             else
                 Items.Root:FadeDescendants(Bool)
-            end
-
-            if Badge then
-                Badge.Instance.Visible = not Bool
             end
         end
 
