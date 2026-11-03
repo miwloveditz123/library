@@ -7209,64 +7209,7 @@ local function moveToPosition(character, targetPosition, customStep, customWait)
 end
 
 -- Teleport via respawn karakter (lempar ke luar batas -> karakter baru) lalu set posisi target
--- ==========================================
--- COVER HITAM FULL LAYAR - nutup metode teleport
--- ==========================================
-local CoverGui, CoverFrame
 
-local function
-    local pg = LocalPlayer:FindFirstChild("PlayerGui")
-    if not pg then return false end
-    if not CoverGui then
-        CoverGui = Instance.new("ScreenGui")
-        CoverGui.Name = "DYYYKZZ_Cover"
-        CoverGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        CoverGui.DisplayOrder = 9999
-        CoverGui.IgnoreGuiInset = true
-        CoverGui.ResetOnSpawn = false
-        CoverFrame = Instance.new("Frame")
-        CoverFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-        CoverFrame.BackgroundTransparency = 0
-        CoverFrame.BorderSizePixel = 0
-        CoverFrame.Size = UDim2.new(1.05, 0, 1.05, 0)
-        CoverFrame.Position = UDim2.new(-0.025, 0, -0.025, 0)
-        CoverFrame.Parent = CoverGui
-        CoverGui.Parent = pg
-    end
-    pcall(function() CoverGui.Enabled = true end)
-    return true
-end
-
-local function uncoverScreen()
-    if CoverGui then pcall(function() CoverGui.Enabled = false end) end
-end
-
-local function instantRespawnTP(targetPos)
-    isInstantRespawning = true
-    local char = LocalPlayer.Character
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-    if not hrp then isInstantRespawning = false return false end
-
-
-    hrp.CFrame = CFrame.new(999999999, 999999999, 999999999)
-
-    local newChar = LocalPlayer.CharacterAdded:Wait()
-    local newHrp = newChar:WaitForChild("HumanoidRootPart", 10)
-    local hum = newChar:WaitForChild("Humanoid", 10)
-    if not newHrp or not hum then uncoverScreen() isInstantRespawning = false return false end
-
-    task.wait(0.8)
-
-    local targetCF = CFrame.new(targetPos)
-    for _ = 1, 4 do
-        newHrp.CFrame = targetCF
-        task.wait(0.15)
-    end
-    task.wait(0.25)
-    uncoverScreen()
-    isInstantRespawning = false
-    return true
-end
 
 -- Teleport lewat underground (turun pelan, jalan di bawah, lalu naik ke target)
 local function handleMovement(dirP)
@@ -9767,7 +9710,7 @@ local function TeleportVehicleKAGI(targetPos)
     applyVehicleWheels()
     task.spawn(autoFixVehicleGround)
     task.wait(0.4)
-    uncoverScreen()
+
 
     setStatus("Motor terpivot + re-anchor (KAGI)...")
     return true
@@ -9826,7 +9769,7 @@ local function TeleportVehicleKAGIFromBelow(targetPos, belowY)
     end
     task.spawn(autoFixVehicleGround)
     task.wait(0.3)
-    uncoverScreen()
+
     return true
 end
 
