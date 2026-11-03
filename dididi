@@ -9089,7 +9089,7 @@ local VIM = VirtualInputManager
 local UG_UNDERGROUND_Y = -3
 local UG_SPEED_DOWN = 110
 local UG_SPEED_MOVE =  110
-local UG_SPEED_UP = 0.5
+local UG_SPEED_UP = 1
 
 local Locations = {
     Dealer = Vector3.new(729.77, 3.70, 455.76),
