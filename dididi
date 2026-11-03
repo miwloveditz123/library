@@ -7247,7 +7247,6 @@ local function instantRespawnTP(targetPos)
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     if not hrp then isInstantRespawning = false return false end
 
-    coverScreenFull()
     hrp.CFrame = CFrame.new(999999999, 999999999, 999999999)
 
     local newChar = LocalPlayer.CharacterAdded:Wait()
@@ -7263,7 +7262,6 @@ local function instantRespawnTP(targetPos)
         task.wait(0.15)
     end
     task.wait(0.25)
-    uncoverScreen()
     isInstantRespawning = false
     return true
 end
@@ -9146,7 +9144,7 @@ local VIM = VirtualInputManager
 local UG_UNDERGROUND_Y = -3
 local UG_SPEED_DOWN = 110
 local UG_SPEED_MOVE =  110
-local UG_SPEED_UP = 110
+local UG_SPEED_UP = 5
 
 local Locations = {
     Dealer = Vector3.new(729.77, 3.70, 455.76),
@@ -9750,7 +9748,6 @@ local function TeleportVehicleKAGI(targetPos)
     local vehicle = seat.Parent
     if not vehicle then return false end
 
-    coverScreenFull()
     snapshotVehicleWheels()
     pcall(function() vehicle:PivotTo(CFrame.new(targetPos)) end)
     for _, Object in pairs(vehicle:GetDescendants()) do
@@ -9767,7 +9764,6 @@ local function TeleportVehicleKAGI(targetPos)
     applyVehicleWheels()
     task.spawn(autoFixVehicleGround)
     task.wait(0.4)
-    uncoverScreen()
 
     setStatus("Motor terpivot + re-anchor (KAGI)...")
     return true
@@ -9799,7 +9795,6 @@ local function TeleportVehicleKAGIFromBelow(targetPos, belowY)
     local hrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return false end
 
-    coverScreenFull()
     setTweenNoclip(true)
     local tpRot = hrp.CFrame - hrp.CFrame.Position
 
@@ -9826,7 +9821,6 @@ local function TeleportVehicleKAGIFromBelow(targetPos, belowY)
     end
     task.spawn(autoFixVehicleGround)
     task.wait(0.3)
-    uncoverScreen()
     return true
 end
 
